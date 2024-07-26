@@ -1,22 +1,14 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
+import type { FilterProps, FilterPropsResponse } from './NativePackageFilter';
 
-const LINKING_ERROR =
-  `The package 'rn-image-filter-convert' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-const RnImageFilterConvert = NativeModules.RnImageFilterConvert
-  ? NativeModules.RnImageFilterConvert
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
-
-export function multiply(a: number, b: number): Promise<number> {
-  return RnImageFilterConvert.multiply(a, b);
+export interface PackageFilterModule {
+  FilterSimple: (data: FilterProps) => Promise<FilterPropsResponse>;
 }
+
+const { RnImageFilterConvert } = NativeModules;
+
+export const FilterSimple = (data: FilterProps): Promise<FilterPropsResponse> => {
+  return RnImageFilterConvert.FilterSimple(data);
+};
+
+export default RnImageFilterConvert as PackageFilterModule;

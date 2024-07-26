@@ -35,7 +35,7 @@
     "example": "yarn workspace rn-image-filter-convert-example",
     "test": "jest",
     "typecheck": "tsc",
-      "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
     "release": "release-it"
   },
