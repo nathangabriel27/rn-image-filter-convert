@@ -14,6 +14,7 @@
 ```sh
 yarn add rn-image-filter-convert
 ```
+&&
 ```sh
 npm install rn-image-filter-convert
 ```
@@ -52,7 +53,7 @@ Defines the types of filters supported by the module.
 
 ```typescript
 export type FilterTypes = 'blackAndWhite' | 'shadesGray';
-
+```
 
 ## Contributing
 
