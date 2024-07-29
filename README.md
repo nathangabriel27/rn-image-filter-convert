@@ -14,6 +14,7 @@
 ```sh
 yarn add rn-image-filter-convert
 ```
+&&
 ```sh
 npm install rn-image-filter-convert
 ```
