@@ -16,5 +16,5 @@ export interface FilterPropsResponse {
   uri: string | null; // achive base64
   filter: FilterTypes; // Filter select
   type: 'base64'; // Fix
-  stratus: StatusReturn;
+  status: StatusReturn;
 }

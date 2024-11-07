@@ -7,7 +7,7 @@ type FilterTypes = 'blackAndWhite' | 'shadesGray';
 
 type FiltersListProps = {
   id: number;
-  filterNome: string;
+  filterName: string;
   filterApply: FilterTypes;
 }
 
@@ -17,12 +17,12 @@ export default function App() {
   const DATA: FiltersListProps[] = [
     {
       id: 2,
-      filterNome: 'Shades of gray',
+      filterName: 'Shades of gray',
       filterApply: 'shadesGray'
     },
     {
       id: 3,
-      filterNome: 'Black and White',
+      filterName: 'Black and White',
       filterApply: 'blackAndWhite'
     }
   ];
@@ -34,24 +34,21 @@ export default function App() {
 
   async function handleFilter(name: FilterTypes) {
     try {
-
       const data = await FilterSimple({ data: ImageBase64, filter: name })
-      //console.log('handleFilterTONSCINZA:', data);
       setImage(`data:image/jpeg;base64,${data.uri}`)
     } catch (error) {
-      console.error('handleFilterTONSCINZA ERROR=>>', error);
+      throw error;
     }
   }
 
-  function Item({ id, filterNome, filterApply }: FiltersListProps) {
+  function RenderItem({ id, filterName, filterApply }: FiltersListProps) {
     return (
       <View style={styles.cardImage} key={id}>
         <Pressable
           style={styles.item}
           onPress={() => handleFilter(filterApply)}
         >
-          <Text style={styles.text}>{filterNome}</Text>
-
+          <Text style={styles.text}>{filterName}</Text>
         </Pressable>
       </View>
     )
@@ -75,9 +72,9 @@ export default function App() {
           bounces={true}
           data={DATA}
           renderItem={({ item }) => (
-            <Item
+            <RenderItem
               id={item.id}
-              filterNome={item.filterNome}
+              filterName={item.filterName}
               filterApply={item.filterApply}
             />
           )}
