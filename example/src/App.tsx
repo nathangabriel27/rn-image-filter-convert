@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, FlatList, Pressable } from 'react-native';
 import ImageBase64 from './assets/data'
-import { FilterSimple } from 'rn-image-filter-convert';
+import { FilterSimple, FilterPropsResponse, FilterTypes } from 'rn-image-filter-convert';
 
-type FilterTypes = 'blackAndWhite' | 'shadesGray';
 
 type FiltersListProps = {
   id: number;
@@ -34,7 +33,7 @@ export default function App() {
 
   async function handleFilter(name: FilterTypes) {
     try {
-      const data = await FilterSimple({ data: ImageBase64, filter: name })
+      const data : FilterPropsResponse = await FilterSimple({ data: ImageBase64, filter: name })
       setImage(`data:image/jpeg;base64,${data.uri}`)
     } catch (error) {
       throw error;

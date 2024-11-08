@@ -4,7 +4,7 @@ export type FilterTypes = 'blackAndWhite' | 'shadesGray';
 
 export type StatusReturn = {
     status: 'success' | 'mensage';
-    mensage: string; // if === success return ''
+    message: string; // If status === 'success', message can be an empty string
 }
 
 export type FilterProps = {
