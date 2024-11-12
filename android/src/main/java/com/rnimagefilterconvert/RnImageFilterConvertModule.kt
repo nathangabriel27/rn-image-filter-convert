@@ -1,9 +1,5 @@
 package com.rnimagefilterconvert
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.*
 import android.util.Base64
 import android.graphics.BitmapFactory
@@ -21,37 +17,48 @@ class RnImageFilterConvertModule(reactContext: ReactApplicationContext) :
 
     @ReactMethod
     fun FilterSimple(filterProps: ReadableMap, promise: Promise) {
-        val base64 = filterProps.getString("data")
-        val filter = filterProps.getString("filter")
+      var base64 = filterProps.getString("data")
+      val filter = filterProps.getString("filter")
 
-        if (base64 == null || filter == null) {
-            promise.reject("ERROR", "Invalid parameters")
-            return
-        }
+      if (base64 == null || filter == null) {
+          promise.reject("ERROR", "Invalid parameters")
+          return
+      }
 
-        try {
-            val image = decodeBase64ToBitmap(base64)
-            val filteredImage = when (filter) {
-                "blackAndWhite" -> applyBlackAndWhiteFilter(image)
-                "shadesGray" -> applyGrayscaleFilter(image)
-                else -> {
-                    promise.reject("ERROR", "Invalid filter type")
-                    return
-                }
-            }
-            val base64String = encodeBitmapToBase64(filteredImage)
-            val response = Arguments.createMap()
-            response.putString("uri", base64String)
-            response.putString("filter", filter)
-            response.putString("type", "base64")
-            val status = Arguments.createMap()
-            status.putString("status", "success")
-            status.putNull("message")
-            response.putMap("status", status)
-            promise.resolve(response)
-        } catch (e: Exception) {
-            promise.reject("ERROR", e.message, e)
+      base64 = formatBase64String(base64)
+      val image = decodeBase64ToBitmap(base64)
+
+      if (image == null) {
+        promise.reject("ERROR", "Invalid base64 string")
+        return
+      }
+
+      val filteredImage: Bitmap = when (filter) {
+        "default" -> applyDefaultFilter(image)
+        "blackAndWhite" -> applyBlackAndWhiteFilter(image)
+        "shadesGray" -> applyGrayscaleFilter(image)
+        else -> {
+          promise.reject("ERROR", "Invalid filter type")
+          return
         }
+      }
+
+      val base64String = encodeBitmapToBase64(filteredImage)
+      val response = Arguments.createMap().apply {
+        putString("uri", base64String)
+        putString("filter", filter)
+        putString("type", "base64")
+        val status = Arguments.createMap()
+        status.putString("status", "success")
+        status.putNull("message")
+        putMap("status", status)
+      }
+      promise.resolve(response)
+  }
+
+    private fun formatBase64String(base64: String): String {
+        return base64.replace("^data:image/[^;]+;base64,".toRegex(), "")
+                   .replace("\\s".toRegex(), "")
     }
 
     private fun decodeBase64ToBitmap(base64: String): Bitmap {
@@ -63,25 +70,29 @@ class RnImageFilterConvertModule(reactContext: ReactApplicationContext) :
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        return "data:image/jpeg;base64," + Base64.encodeToString(byteArray, Base64.NO_WRAP)
+    }
+
+    private fun applyDefaultFilter(image: Bitmap): Bitmap {
+      return image
     }
 
     private fun applyBlackAndWhiteFilter(bitmap: Bitmap): Bitmap {
-       val width = bitmap.width
-        val height = bitmap.height
-        val blackAndWhiteBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+      val width = bitmap.width
+      val height = bitmap.height
+      val blackAndWhiteBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                val pixel = bitmap.getPixel(x, y)
-                val red = Color.red(pixel)
-                val green = Color.green(pixel)
-                val blue = Color.blue(pixel)
-                val gray = (red + green + blue) / 3
-                val newPixel = if (gray > 128) Color.WHITE else Color.BLACK
-                blackAndWhiteBitmap.setPixel(x, y, newPixel)
-            }
-        }
+      for (x in 0 until width) {
+          for (y in 0 until height) {
+              val pixel = bitmap.getPixel(x, y)
+              val red = Color.red(pixel)
+              val green = Color.green(pixel)
+              val blue = Color.blue(pixel)
+              val gray = (red + green + blue) / 3
+              val newPixel = if (gray > 128) Color.WHITE else Color.BLACK
+              blackAndWhiteBitmap.setPixel(x, y, newPixel)
+          }
+      }
         return blackAndWhiteBitmap
     }
 

@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image, FlatList, Pressable } from 'react-native';
 import ImageBase64 from './assets/data'
-import { FilterSimple } from 'rn-image-filter-convert';
-
-type FilterTypes = 'blackAndWhite' | 'shadesGray';
+import { FilterSimple, FilterPropsResponse, FilterTypes } from 'rn-image-filter-convert';
 
 type FiltersListProps = {
   id: number;
@@ -14,7 +12,16 @@ type FiltersListProps = {
 export default function App() {
   const [image, setImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    setImage(`data:image/jpeg;base64,${ImageBase64}`)
+  }, []);
+
   const DATA: FiltersListProps[] = [
+    {
+      id: 1,
+      filterName: 'Default',
+      filterApply: 'default'
+    },
     {
       id: 2,
       filterName: 'Shades of gray',
@@ -27,15 +34,10 @@ export default function App() {
     }
   ];
 
-  useEffect(() => {
-    setImage(`data:image/jpeg;base64,${ImageBase64}`)
-  }, []);
-
-
   async function handleFilter(name: FilterTypes) {
     try {
-      const data = await FilterSimple({ data: ImageBase64, filter: name })
-      setImage(`data:image/jpeg;base64,${data.uri}`)
+      const data: FilterPropsResponse = await FilterSimple({ data: ImageBase64, filter: name })
+      setImage(`${data.uri}`)
     } catch (error) {
       throw error;
     }
@@ -54,7 +56,6 @@ export default function App() {
     )
   }
 
-
   return (
     <>
       <View style={styles.container}>
@@ -71,6 +72,7 @@ export default function App() {
         <FlatList
           bounces={true}
           data={DATA}
+          showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
             <RenderItem
               id={item.id}
@@ -102,18 +104,20 @@ const styles = StyleSheet.create({
   cardImage: {
     alignItems: 'center',
     backgroundColor: '#2962b6',
-    margin: 10,
+    margin: 6,
+    borderRadius: 8,
   },
   item: {
     width: 100,
-    height: 100,
+    height: 80,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
     borderRadius: 8,
   },
   text: {
-    color: '#000000',
-    fontWeight: 'bold'
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
