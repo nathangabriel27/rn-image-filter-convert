@@ -1,6 +1,6 @@
 {
   "name": "rn-image-filter-convert",
-  "version": "0.1.4",
+  "version": "0.1.15",
   "description": "A React Native module to apply image filters.",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",

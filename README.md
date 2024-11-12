@@ -16,7 +16,7 @@ yarn add rn-image-filter-convert
 ```
 &&
 ```sh
-npm install rn-image-filter-convert
+npx react-native start --reset-cache
 ```
 
 ## Usage Basic Import and Use
@@ -52,7 +52,7 @@ This package provides TypeScript definitions for a better development experience
 Defines the types of filters supported by the module.
 
 ```typescript
-export type FilterTypes = 'blackAndWhite' | 'shadesGray';
+export type FilterTypes = 'blackAndWhite' | 'shadesGray' | 'default';
 ```
 
 ## Contributing
