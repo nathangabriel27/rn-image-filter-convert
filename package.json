@@ -38,7 +38,7 @@
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
     "release": "release-it",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint ."
   },
   "keywords": [
     "react-native",

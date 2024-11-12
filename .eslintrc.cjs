@@ -27,5 +27,11 @@ module.exports = {
   rules: {
     "react/prop-types": "off",
     "@typescript-eslint/no-unused-vars": "warn"
-  }
+  },
+  // Defina as extensões de arquivos para serem lidas pelo ESLint
+  overrides: [
+    {
+      files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]
+    }
+  ]
 };
